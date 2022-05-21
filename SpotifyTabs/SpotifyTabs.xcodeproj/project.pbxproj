@@ -110,8 +110,8 @@
 		45F435C7283902B200DEF659 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				455C93A5283904680058FAAD /* Models */,
 				455C93A12839035D0058FAAD /* HomeController.swift */,
+				455C93A5283904680058FAAD /* Models */,
 				455C93AB283909740058FAAD /* Views */,
 				455C93A62839077D0058FAAD /* Cells */,
 			);

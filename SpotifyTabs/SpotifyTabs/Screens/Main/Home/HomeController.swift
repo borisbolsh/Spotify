@@ -3,15 +3,15 @@ import UIKit
 final class HomeController: UIViewController {
 
 	private struct Constants {
-		static let cellId = "ItemId"
+		static let playlistCellId = "ItemId"
 	}
 
-	private let menuBar: UIView
+	private let menuBar: MenuBar
 	private let colors: [UIColor] = [.systemRed, .systemBlue, .systemTeal]
-	private let music: [[Track]] = [playlists, artists, albums]
+	private let music: [[Track]] = [Track.playlists, Track.artists, Track.albums]
 	private lazy var collectionView: UICollectionView = setupCollectionVC()
 
-	override init(nibName: String?, bundle: Bundle? ) {
+	override init(nibName: String?, bundle: Bundle?) {
 		self.menuBar = MenuBar()
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -22,9 +22,8 @@ final class HomeController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-//		view.backgroundColor = .spotifyBlack
-//		menuBar.delegate = self
-//
+		view.backgroundColor = .spotifyBlack
+		menuBar.delegate = self
 		layout()
 	}
 
@@ -55,8 +54,8 @@ final class HomeController: UIViewController {
 
 		let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
-//		collectionView.register(PlaylistCell.self, forCellWithReuseIdentifier: playlistCellId)
-//		collectionView.backgroundColor = .spotifyBlack
+		collectionView.register(PlaylistCell.self, forCellWithReuseIdentifier: Constants.playlistCellId)
+		collectionView.backgroundColor = .spotifyBlack
 		collectionView.isPagingEnabled = true
 		collectionView.dataSource = self
 		collectionView.delegate = self
@@ -72,10 +71,19 @@ extension HomeController: UICollectionViewDataSource {
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PlaylistCell.self), for: indexPath) as? PlaylistCell
-		cell?.backgroundColor = colors[indexPath.item]
-		cell?.tracks = music[indexPath.item]
+		cell?.configure(
+			items: music[indexPath.item],
+			backgroundColor: colors[indexPath.item]
+		)
 		return cell ?? UICollectionViewCell()
 	}
 }
 
 extension HomeController: UICollectionViewDelegateFlowLayout {}
+
+extension HomeController: MenuBarDelegate {
+	func didSelectItemAt(index: Int) {
+		let indexPath = IndexPath(item: index, section: 0)
+		collectionView.scrollToItem(at: indexPath, at: [], animated: true)
+	}
+}

@@ -1,3 +1,5 @@
+import Foundation
+
 struct Track {
 	let imageName: String
 	let title: String

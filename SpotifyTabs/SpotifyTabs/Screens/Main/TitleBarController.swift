@@ -41,7 +41,7 @@ extension TitleBarController {
 			let musicBarButtonItem = musicBarButtonItem,
 			let podCastBarButtonItem = podCastBarButtonItem
 		else {
-			 return
+			return
 		}
 
 		navigationItem.setLeftBarButtonItems([musicBarButtonItem, podCastBarButtonItem], animated: false)
@@ -89,8 +89,64 @@ extension TitleBarController {
 
 extension TitleBarController {
 	@objc private func musicTapped() {
+		if container.children.first == viewControllers[0] { return }
+
+		container.add(child: viewControllers[0])
+
+		animateTransition(fromVC: viewControllers[1], toVC: viewControllers[0]) {success in
+			self.viewControllers[1].remove()
+		}
+
+		UIView.animate(withDuration: 0.5) {
+			self.musicBarButtonItem?.customView?.alpha = 1.0
+			self.podCastBarButtonItem?.customView?.alpha = 0.5
+		}
 	}
 
 	@objc private func podcastTapped() {
+		if container.children.first == viewControllers[1] { return }
+
+		container.add(child: viewControllers[1])
+
+		animateTransition(fromVC: viewControllers[0], toVC: viewControllers[1]) {success in
+			self.viewControllers[0].remove()
+		}
+
+		UIView.animate(withDuration: 0.5) {
+			self.musicBarButtonItem?.customView?.alpha = 0.5
+			self.podCastBarButtonItem?.customView?.alpha = 1.0
+		}
+	}
+
+	func animateTransition(fromVC: UIViewController, toVC: UIViewController, completion: @escaping ((Bool) -> Void)) {
+		guard
+			let fromView = fromVC.view,
+			let fromIndex = getIndex(forViewController: fromVC),
+			let toView = toVC.view,
+			let toIndex = getIndex(forViewController: toVC)
+		else {
+			return
+		}
+
+		let frame = fromVC.view.frame
+		var fromFrameEnd = frame
+		var toFrameStart = frame
+		fromFrameEnd.origin.x = toIndex > fromIndex ? frame.origin.x - frame.width : frame.origin.x + frame.width
+		toFrameStart.origin.x = toIndex > fromIndex ? frame.origin.x + frame.width : frame.origin.x - frame.width
+		toView.frame = toFrameStart
+
+		UIView.animate(withDuration: 0.5, animations: {
+			fromView.frame = fromFrameEnd
+			toView.frame = frame
+		}, completion: {success in
+			completion(success)
+		})
+	}
+
+	func getIndex(forViewController vc: UIViewController) -> Int? {
+		for (index, thisVC) in viewControllers.enumerated() {
+			if thisVC == vc { return index }
+		}
+		return nil
 	}
 }
