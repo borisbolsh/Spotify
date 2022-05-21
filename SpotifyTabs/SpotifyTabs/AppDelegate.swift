@@ -8,9 +8,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        window?.backgroundColor = .white
+//        window?.backgroundColor = .white
 
-        window?.rootViewController = ViewController()
+
+        let navigatorController = UINavigationController(rootViewController: TitleBarController())
+        window?.rootViewController = navigatorController
+//        window?.rootViewController = ViewController()
 
         return true
     }
