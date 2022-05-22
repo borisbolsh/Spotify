@@ -1,10 +1,10 @@
 import UIKit
 
 final class TitleBarController: UIViewController {
-	let viewControllers: [UIViewController] = []
-	let container: UIViewController
-	var musicBarButtonItem: UIBarButtonItem?
-	var podCastBarButtonItem: UIBarButtonItem?
+	private var viewControllers: [UIViewController] = []
+	private let container: UIViewController
+	private var musicBarButtonItem: UIBarButtonItem?
+	private var podCastBarButtonItem: UIBarButtonItem?
 
 	override init(nibName: String?, bundle: Bundle? ) {
 		self.container = UIViewController()
@@ -45,6 +45,8 @@ extension TitleBarController {
 		}
 
 		navigationItem.setLeftBarButtonItems([musicBarButtonItem, podCastBarButtonItem], animated: false)
+
+		viewControllers = [HomeController(), HomeController()]
 	}
 
 	private func setupViews() {

@@ -1,19 +1,15 @@
 import UIKit
 
 final class HomeController: UIViewController {
-
-	private struct Constants {
-		static let playlistCellId = "ItemId"
-	}
-
 	private let menuBar: MenuBar
 	private let colors: [UIColor] = [.systemRed, .systemBlue, .systemTeal]
 	private let music: [[Track]] = [Track.playlists, Track.artists, Track.albums]
-	private lazy var collectionView: UICollectionView = setupCollectionVC()
+	private var collectionView: UICollectionView?
 
 	override init(nibName: String?, bundle: Bundle?) {
 		self.menuBar = MenuBar()
 		super.init(nibName: nil, bundle: nil)
+		self.collectionView = setupCollectionView()
 	}
 
 	required init?(coder: NSCoder) {
@@ -28,6 +24,11 @@ final class HomeController: UIViewController {
 	}
 
 	private func layout() {
+		guard
+			let collectionView = collectionView
+		else {
+			return
+		}
 		menuBar.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(menuBar)
 		view.addSubview(collectionView)
@@ -47,14 +48,14 @@ final class HomeController: UIViewController {
 		])
 	}
 
-	private func setupCollectionVC() -> UICollectionView {
+	private func setupCollectionView() -> UICollectionView {
 		let layout = UICollectionViewFlowLayout()
 		layout.scrollDirection = .horizontal
 		layout.minimumLineSpacing = 0
 
 		let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
-		collectionView.register(PlaylistCell.self, forCellWithReuseIdentifier: Constants.playlistCellId)
+		collectionView.register(PlaylistCell.self, forCellWithReuseIdentifier: String(describing: PlaylistCell.self))
 		collectionView.backgroundColor = .spotifyBlack
 		collectionView.isPagingEnabled = true
 		collectionView.dataSource = self
@@ -79,10 +80,23 @@ extension HomeController: UICollectionViewDataSource {
 	}
 }
 
-extension HomeController: UICollectionViewDelegateFlowLayout {}
+extension HomeController: UICollectionViewDelegateFlowLayout {
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		return CGSize(width: view.frame.width, height: collectionView.frame.height)
+	}
+
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		menuBar.scrollIndicator(to: scrollView.contentOffset)
+	}
+}
 
 extension HomeController: MenuBarDelegate {
 	func didSelectItemAt(index: Int) {
+		guard
+			let collectionView = collectionView
+		else {
+			return
+		}
 		let indexPath = IndexPath(item: index, section: 0)
 		collectionView.scrollToItem(at: indexPath, at: [], animated: true)
 	}

@@ -3,12 +3,12 @@ import UIKit
 final class TrackCell: UICollectionViewCell {
 	private enum Constants {
 		static let trackCellHeight: CGFloat = 72
-		static let trackCellId = "trackId"
 	}
 
 	private var imageView = UIImageView()
 	private var titleLabel = UILabel()
 	private var subtitleLabel = UILabel()
+	private var stackViewCell = UIStackView()
 
 	var track: Track? {
 		didSet {
@@ -39,13 +39,13 @@ final class TrackCell: UICollectionViewCell {
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-		let stackView = makeStackView(axis: .vertical)
-		stackView.spacing = 6
-		stackView.addArrangedSubview(titleLabel)
-		stackView.addArrangedSubview(subtitleLabel)
+		stackViewCell = makeStackView(axis: .vertical)
+		stackViewCell.spacing = 6
+		stackViewCell.addArrangedSubview(titleLabel)
+		stackViewCell.addArrangedSubview(subtitleLabel)
 
 		addSubview(imageView)
-		addSubview(stackView)
+		addSubview(stackViewCell)
 
 		NSLayoutConstraint.activate([
 			imageView.topAnchor.constraint(equalTo: topAnchor),
@@ -53,9 +53,9 @@ final class TrackCell: UICollectionViewCell {
 			imageView.heightAnchor.constraint(equalToConstant: Constants.trackCellHeight),
 			imageView.widthAnchor.constraint(equalToConstant: Constants.trackCellHeight),
 
-			stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-			stackView.leadingAnchor.constraint(equalToSystemSpacingAfter: imageView.trailingAnchor, multiplier: 2),
-			trailingAnchor.constraint(equalToSystemSpacingAfter: stackView.trailingAnchor, multiplier: 3)
+			stackViewCell.centerYAnchor.constraint(equalTo: centerYAnchor),
+			stackViewCell.leadingAnchor.constraint(equalToSystemSpacingAfter: imageView.trailingAnchor, multiplier: 2),
+			trailingAnchor.constraint(equalToSystemSpacingAfter: stackViewCell.trailingAnchor, multiplier: 3)
 		])
 	}
 
