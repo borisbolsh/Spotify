@@ -121,37 +121,6 @@ extension MenuBar {
 		delegate?.didSelectItemAt(index: 2)
 	}
 
-	func selectItem(at index: Int) {
-		 animateIndicator(to: index)
-	}
-
-	private func animateIndicator(to index: Int) {
-		guard let playlistsButton = playlistsButton,
-		   let artistsButton = artistsButton,
-		   let albumsButton = albumsButton
-		else {
-			return
-		}
-
-		var button: UIButton
-		switch index {
-		case 0:
-			button = playlistsButton
-		case 1:
-			button = artistsButton
-		case 2:
-			button = albumsButton
-		default:
-			button = playlistsButton
-		}
-
-		setAlpha(for: button)
-
-		UIView.animate(withDuration: 0.3) {
-			self.layoutIfNeeded()
-		}
-	}
-
 	func scrollIndicator(to contentOffset: CGPoint) {
 		let index = Int(contentOffset.x / frame.width)
 		let atScrollStart = Int(contentOffset.x) % Int(frame.width) == 0
